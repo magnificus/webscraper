@@ -1,9 +1,14 @@
+# -*- coding: utf-8 -*-
+
 import requests
 from bs4 import BeautifulSoup
 import re
 import sys
 import unicodedata
 import time
+
+import locale
+
 class Hit:
     def __init__(self, date, name, link):
     	self.date = date
@@ -12,7 +17,6 @@ class Hit:
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.117 Safari/537.36'}
-
 prevRes = 10
 curr = 0
 links = []
@@ -23,20 +27,23 @@ while (prevRes == 10):
 	response.raise_for_status()
 
 	soup = BeautifulSoup(response.text, "lxml")
+		
 	data = soup.findAll('div',attrs={'class':'g'})
+	
+
 
 	for div in data:
 		#print("DIV " + str(div))
-		desc = div.find('div', attrs={'class': 'st'}).text
-		name = div.find('a').text
+		#desc = div.find('div', attrs={'class': 'st'}).text
+		name = div.find_all('a')[-1].text
 		link = div.find('a')['href'][7:]
-		second = div.find('span', attrs={'class' : 'f'}).text
-		links.append(Hit(second, name, link))
+		date = div.find('span', attrs={'class' : 'f'}).text
+		links.append(Hit(date, name, link))
 	prevRes = len(data)
 	curr += prevRes
 
 for link in links:
-    print((link.name + "; " + link.date + "; " + link.link).encode('utf-8'))
+    print((link.date + "; " + link.name + "; " + link.link).encode('utf-8'))
 
 print (str(len(links)) + " results");
-print ("Data displayed as: Title; Date; Link")
+print ("Data displayed as: Date; Name; Link")
