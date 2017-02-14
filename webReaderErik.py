@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import sys
 import unicodedata
-
+import time
 class Hit:
     def __init__(self, date, name, link):
     	self.date = date
@@ -11,13 +11,14 @@ class Hit:
     	self.link = link
 
 headers = {
-    'User-Agent': 'Mozilla/5 (Solaris 10) Gecko'}
-
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.117 Safari/537.36'}
 
 prevRes = 10
 curr = 0
 links = []
 while (prevRes == 10):
+	time.sleep(5) # delays for 5 seconds
+
 	response = requests.get("http://www.google.se/search?&tbm=nws&q=" + sys.argv[1] + "&start=" + (str(curr)), headers = headers)
 	response.raise_for_status()
 
